@@ -1,0 +1,80 @@
+*{font-size: 12px;}
+#preview{
+    background-color: #deb887;
+}
+#preview>div{
+    padding: 10px;
+    border-top: 5px solid #d3af80;
+}
+#preview-title{}
+#preview-text{
+}
+#preview-links{
+    border-bottom: 5px solid #d3af80;
+}
+#preview-links li>a{
+    padding: 2px 0px;
+    display:inline-block;
+    font-weight: bold;
+}
+#preview-links li>a:hover{
+    text-decoration: underline;
+}
+
+
+.pagelist li{
+    /*border-bottom: 3px solid #d3af80;*/
+}
+.pagelist li a{
+
+}
+
+#formpage{}
+
+.form-line{
+    padding: 10px;
+}
+.formpage-buttons{
+    padding: 3px;
+    border-bottom: 3px solid #d3af80;
+}
+
+.fp-items-list{
+    margin: 5px 0;
+    /*background-color: #d3af80;*/
+}
+.fp-item{
+}
+
+
+
+#fp-box{
+    position: absolute;
+    background-color: #fff;
+    box-shadow: 0px 3px 15px -5px #000;
+    border: 5px solid #d3af80;
+}
+#fp-box ul{}
+#fp-box ul>li>div:first-child{
+    font-weight: bold;
+}
+#fp-box ul>li>div:last-child{
+    padding-left: 25px;
+    font-size: 90%;
+    font-style: italic;
+}
+#fp-box ul>li{
+    padding: 5px;
+}
+#fp-box ul>li:hover{
+    background-color: #d3af80;
+}
+
+.fp-item-title{
+    text-decoration: underline;
+}
+.fp-item-info{
+    padding: 5px 25px;
+    background-color: #fed59d;
+    /*color: #d3af80;*/
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/grid.css">
+    <script data-init="js/main.js" src="js/namespaceapplication.js"></script>
+    <style>
+        *{
+            font-size: 12px;
+        }
+        #page{}
+        #header{
+            background-color: #dcd2e3;
+            color: #3a393b;
+        }
+        #page_left{}
+        #page_right{}
+
+        .form_line>span{
+            /*display: inline-block;*/
+        }
+        .form_line>span:first-child {
+            /*width: 200px;*/
+        }
+        .form_line>span{
+            display: block;
+        }
+        .form_line>span:first-child {
+            font-weight: bold;
+        }
+
+        .error{
+            display: inline-block;
+            padding: 5px 15px;
+            border: 2px solid red;
+            color: red;
+        }
+
+
+        .buttons{
+            display: inline;
+            padding: 5px 0px;
+            border-radius: 3px;
+            background-color: #ececec;
+            border: 1px solid #e0e0e0;
+        }
+        .buttons>*{
+            display: inline-block;
+            padding: 5px 5px;
+            border-left: 1px solid #e0e0e0;
+        }
+        .buttons>*:first-child{
+            border-left: none;
+        }
+        .buttons>*:hover{
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+<div id="page">
+
+    <div id="header" class="table">
+        <h2> interactive constyructor</h2>
+    </div>
+
+    <div class="table">
+
+        <div id="box-form">
+            <form name="editor">
+                <div class="form_line">
+                    <span>Page Title</span>
+                    <span><input type="text" name="title" value="{title}"></span>
+                </div>
+                <div class="form_line">
+                    <span>Page Content</span>
+                    <span><textarea name="content">{content}</textarea></span>
+                </div>
+                <div class="form_line">
+                    <span>Reflections</span>
+                    <div id="editor-create-reflection" class="button">Create</div>
+                </div>
+                <div class="form_line">
+                    <span>
+                        <input type="submit" value="save">
+                        <input type="text" name="id" value="{id}" hidden="hidden">
+                        <input type="text" name="mode" value="{mode}" hidden="hidden">
+                    </span>
+                </div>
+                <div class="form_line">
+                    <span class="error hide"></span>
+                </div>
+            </form>
+        </div>
+
+
+        <div id="box-list"></div>
+
+
+        <div id="box-view"></div>
+
+    </div>
+
+</div>
+</body>
+</html>

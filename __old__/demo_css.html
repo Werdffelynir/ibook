@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/grid.css">
+    <style>
+        *{
+            /*font-family: Sans, "DejaVu Sans";*/
+            /*font-size: 14px;*/
+        }
+        form>div{
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+        #side_left, #side_right{
+            width: 50%;
+        }
+        #side_left input, #side_left select{
+            display: block;
+        }
+
+
+
+        /*.radio-list .table>span:first-child{width: 30px; vertical-align: middle}*/
+        /*.radio-list input{display: block}*/
+
+    </style>
+</head>
+<body>
+
+<div class="table">
+
+    <div id="side_right" class="valign_top">
+        <form action="">
+
+            <!--<div><input type="radio" name="one"> radio one</div>-->
+            <!--<div><input type="radio" name="one"> radio one</div>-->
+            <!--<div><input type="radio" name="one"> radio one</div>-->
+
+            <div>
+                <div class="table">
+                    <span class="width_5 "><input class="block" type="radio" name="two"></span>
+                    <span class="valign_top">radio two</span>
+                </div>
+                <div class="table">
+                    <span class="width_5"><input class="block" type="radio" name="two"></span>
+                    <span class="valign_top">radio two</span>
+                </div>
+            </div>
+
+            <!--<div><input type="checkbox" name="checkbox1"> checkbox1</div>-->
+            <!--<div><input type="checkbox" name="checkbox2"> checkbox2</div>-->
+            <!--<div><input type="checkbox" name="checkbox3"> checkbox3</div>-->
+
+            <div>
+                <div class="table">
+                    <span class="width_5 "><input class="block" type="checkbox" name="two"></span>
+                    <span class="">checkbox</span>
+                </div>
+                <div class="table">
+                    <span class="width_5"><input class="block" type="checkbox" name="two"></span>
+                    <span class="">checkbox</span>
+                </div>
+                <div class="table">
+                    <span class="width_5"><input class="block" type="checkbox" name="two"></span>
+                    <span class="">checkbox</span>
+                </div>
+            </div>
+
+
+
+
+            <div><textarea name=""></textarea></div>
+
+            <div><input type="color" value="color"></div>
+
+            <div><input type="submit" value="submit"></div>
+
+            <div><input type="reset" value="reset"></div>
+
+            <div><button name="button" value="button1">button1</button></div>
+
+            <div>
+                <span class="button">button span</span>
+                <div class="button">button div</div>
+                <a class="button" href="#">button a</a>
+            </div>
+
+            <div><input type="image" name="image" src="http://placehold.it/36x36"></div>
+            <div>
+                <label class="upload-label">Upload file</label>
+                <input type="file"/>
+            </div>
+
+            <div><input type="range"></div>
+
+            <div>
+                <select name="select" id="">
+                    <option value="">option</option>
+                    <option value="">option</option>
+                    <option value="">option</option>
+                </select>
+            </div>
+
+            <div>
+                <select name="select2" size="3">
+                    <option>cherry</option>
+                    <option>orange</option>
+                    <option>apple</option>
+                    <option>space-around</option>
+                    <option>justify</option>
+                    <option>content</option>
+                </select>
+            </div>
+
+            <div>
+                <input list="browsers">
+                <datalist id="browsers">
+                    <option value="Internet Explorer">
+                    <option value="Firefox">
+                    <option value="Chrome">
+                    <option value="Opera">
+                    <option value="Safari">
+                </datalist>
+            </div>
+
+            <div>
+                <select>
+                    <optgroup label="Option group 1">
+                        <option>Option 3</option>
+                        <option>Option 3</option>
+                        <option>Option 3</option>
+                        <option>Option 3</option>
+                        <option>Option 3</option>
+                        <option>Option 3</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div><input type="search" name="one"></div>
+
+            <div><input type="text"></div>
+            <div><input type="text"></div>
+            <div><input type="password" name="password"></div>
+
+            <div><input type="date"></div>
+            <div><input type="number"></div>
+            <div><input type=email></div>
+            <div><input type=tel></div>
+            <div><input type=url></div>
+            <div><input type=number></div>
+
+
+        </form>
+    </div>
+
+    <div id="side_left" class="valign_top">
+        <form action="">
+
+
+            <input autofocus>
+
+            <input>
+
+            <input required>
+
+            <input type=text>
+
+            <textarea></textarea>
+
+            <input type=password placeholder=password>
+
+            <input type=radio>
+
+            <input type=radio checked>
+
+            <input type=checkbox>
+
+            <input type=checkbox checked>
+
+            <select>
+                <option></option>
+                <option>Option 1</option>
+            </select>
+
+            <select>
+                <optgroup label="Option group 1">
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                </optgroup>
+                <optgroup>
+                    <option>Option 3</option>
+                </optgroup>
+            </select>
+
+            <input type=text placeholder=placeholder>
+
+            <input type=search>
+
+            <input type=file>
+
+            <fieldset>
+                <legend>Legend</legend>
+                <label for=field>Label</label>
+                <input id=field>
+            </fieldset>
+
+            <input type=submit>
+
+            <button>Button</button>
+
+            <input type=reset>
+
+            <input type=email>
+
+            <input type=tel>
+
+            <input type=url>
+
+            <input type=number>
+
+            <input type=number min=0 max=15 step=3>
+
+            <input type=range>
+
+            <input type=range min=0 max=15 step=3>
+
+            <input type=date>
+
+            <input type=month>
+
+            <input type=week>
+
+            <input type=time>
+
+            <input type=datetime>
+
+            <input type=datetime-local>
+
+            <input type=color>
+
+            <input type=color value="#ff3d3d">
+
+            <progress max="100" value="22"></progress>
+
+            <progress></progress>
+
+            <meter value="10" min="0" max="100" low="25" high="75" optimum="15"></meter>
+        </form>
+    </div>
+
+</div><!--TABLE-->
+
+</body>
+</html>
+
+
+
+
+
+
+
