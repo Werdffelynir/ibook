@@ -261,7 +261,10 @@
      * @returns {*|boolean}
      */
     NamespaceApplication.isNode = function (value) {
-        return value && (value.nodeType !== Node.ELEMENT_NODE || value.nodeType === Node.DOCUMENT_NODE)
+        return value && (value.nodeType === Node.TEXT_NODE ||
+            value.nodeType === Node.ELEMENT_NODE ||
+            value.nodeType === Node.DOCUMENT_FRAGMENT_NODE ||
+            value.nodeType === Node.DOCUMENT_NODE)
     };
 
     /**
@@ -323,6 +326,38 @@
     };
 
     /**
+     * Select and return a object with elements selected by 'attr'
+     * or if 'attr' is false return numeric object
+     * .search('li.num', 'data-id')
+     * .search('li')
+     * .search('li', false, NodeElement)
+     *
+     * @param selector
+     * @param attr
+     * @param from
+     * @returns {{}}
+     */
+    NamespaceApplication.search = function (selector, attr, from) {
+        from = NamespaceApplication.isNode(from) ? from : NamespaceApplication.query(from);
+        var i = 0, key, elements = {},
+            queryElements = NamespaceApplication.queryAll(selector, from || document.body);
+        if (queryElements) {
+            while (i < queryElements.length) {
+                if (!attr)
+                    elements[i] = queryElements[i];
+                else {
+                    if (queryElements[i].hasAttribute(attr)) {
+                        key = queryElements[i].getAttribute(attr);
+                        elements[key] = queryElements[i];
+                    }
+                }
+                i++;
+            }
+        }
+        return elements;
+    };
+
+    /**
      * Select and return a one (first) element by selector
      *
      * @param selector      String
@@ -371,6 +406,7 @@
     /**
      * Select and return a one element by selector. Search up on a DOM tree
      *
+     * @deprecated
      * @param selector
      * @param from
      * @param loops
@@ -412,6 +448,42 @@
             for (i = 0; i < list.length; i++) callback.call({}, list[i], i, tmp);
         else
             for (i in list) callback.call({}, list[i], i, tmp);
+    };
+
+    /**
+     * Execute callback for each parent element
+     * and return array with parents elements
+     * .eachParent('.my-class')
+     * .eachParent('.my-class', function filter (parent) {}, 10)
+     *
+     * @param selector          Start selector or element
+     * @param callbackFilter    Each return value it is filter mark, bool true add element to result array
+     * @param loops
+     * @returns {Array}
+     */
+    NamespaceApplication.eachParent = function (selector, callbackFilter, loops) {
+        loops = loops === undefined ? 10 : loops;
+        selector = NamespaceApplication.isNode(selector) ? selector : NamespaceApplication.query(selector);
+
+        var result = [],
+            get_parent = function (elem) {
+                return elem && elem.parentNode ? elem.parentNode : false
+            },
+            parent = get_parent(selector);
+
+        while (loops > 0 && parent) {
+            loops--;
+
+            if (typeof callbackFilter === 'function') {
+                if (callbackFilter.call({}, parent))
+                    result.push(parent);
+            } else {
+                result.push(parent);
+            }
+
+            parent = get_parent(parent);
+        }
+        return result;
     };
 
     /**
@@ -490,6 +562,25 @@
     };
 
     /**
+     *
+     * @type {{hide: Window.NamespaceApplication.cssDisplay.hide, show: Window.NamespaceApplication.cssDisplay.show, toggle: Window.NamespaceApplication.cssDisplay.toggle, last: Window.NamespaceApplication.cssDisplay.last, isHidden: Window.NamespaceApplication.cssDisplay.isHidden}}
+     */
+    NamespaceApplication.cssDisplay = {
+        hide: function (src) {
+            src._display = src.style.display ? src.style.display : getComputedStyle(src).display;
+            NamespaceApplication.css(src, {display:'none'})},
+        show: function (src) {
+            NamespaceApplication.css(src, {display: src._display ? src._display : 'block'})},
+        toggle: function (src) {
+            if (src.style.display == 'none') NamespaceApplication.cssDisplay.show(src);
+            else NamespaceApplication.cssDisplay.hide(src)},
+        last: function (src) {
+            return src._display ? src._display : (src.style.display  ? src.style.display : getComputedStyle(src).display) },
+        isHidden: function (src) {
+            return src.style.display == 'none' || getComputedStyle(src).display == 'none' }
+    };
+
+    /**
      * Inject data into HTMLElement by selector
      *
      * @param selector
@@ -500,8 +591,8 @@
     NamespaceApplication.inject = function (selector, data, append) {
         if (typeof selector === 'string')
             selector = this.query(selector);
-        if (typeof selector === 'object' && selector.nodeType === Node.ELEMENT_NODE) {
-            if (typeof data === 'object' && data.nodeType === Node.ELEMENT_NODE) {
+        if (NamespaceApplication.isNode(selector)) {
+            if (NamespaceApplication.isNode(data)) {
                 if (!append)
                     selector.textContent = '';
                 selector.appendChild(data);
@@ -785,12 +876,15 @@
         prototype.uri = NamespaceApplication.uri;
         prototype.redirect = NamespaceApplication.redirect;
         prototype.routePath = NamespaceApplication.routePath;
+        prototype.search = NamespaceApplication.search;
         prototype.query = NamespaceApplication.query;
         prototype.queryAll = NamespaceApplication.queryAll;
         prototype.queryUp = NamespaceApplication.queryUp;
         prototype.each = NamespaceApplication.each;
+        prototype.eachParent = NamespaceApplication.eachParent;
         prototype.on = NamespaceApplication.on;
         prototype.css = NamespaceApplication.css;
+        prototype.cssDisplay = NamespaceApplication.cssDisplay;
         prototype.inject = NamespaceApplication.inject;
         prototype.format = NamespaceApplication.format;
         prototype.ajax = NamespaceApplication.ajax;
@@ -814,9 +908,9 @@
      * Set script version. Property [read-only]
      */
     Object.defineProperty(NamespaceApplication, 'version', {
-        enumerable: false, configurable: false, writable: false, value: '0.2.3'
+        enumerable: false, configurable: false, writable: false, value: '0.2.4'
     });
 
-    window.NamespaceApplication = window.NsApp = NamespaceApplication;
+    window.NamespaceApplication = window.NSA = NamespaceApplication;
 
 })(window)

@@ -12,5 +12,15 @@ var App = new NamespaceApplication({
 
 
 
-
-
+(function () {
+    NSA.queryAll('.fp-item-title').map(function(item){
+        NSA.on(item, 'click', function (event) {
+            var elem =  event.target.nextElementSibling;
+            NSA.cssDisplay.toggle(elem);
+        });
+    });
+    NSA.on('#fp-box-open', 'click', function (event) {
+        var elem =  event.target.nextElementSibling;
+        NSA.cssDisplay.toggle(elem);
+    });
+})();
