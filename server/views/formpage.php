@@ -28,7 +28,7 @@ if (is_array($links)) {
             <button>New page</button>
             <button>Delete page</button>
         </div>
-        <div class="text_right">
+        <div class="text-right">
             <button>Save page</button>
         </div>
     </div>
@@ -43,8 +43,14 @@ if (is_array($links)) {
     </div>
 
     <div class="form-line">
+<!--        text <br>-->
+        <textarea name="text"></textarea>
+    </div>
+
+    <div class="form-line">
         <div>
-            <button id="fp-box-open">Routs paths</button>
+            <button id="fp-box-create">Create path</button>
+            <button id="fp-box-open">Open path</button>
             <div id="fp-box" style="display: none">
                 <ul>
                     <?php foreach($show_links as $slink):?>
@@ -69,35 +75,8 @@ if (is_array($links)) {
         </div>
     </div>
 
-    <div class="form-line">
-        text <br>
-        <textarea name="text"></textarea>
-    </div>
-
     <div>
         <input type="text" name="id" value="{id}" hidden="hidden">
         <input type="text" name="links" value="{links}" hidden="hidden">
     </div>
 </div>
-
-<script>
-    (function () {
-        NsApp.queryAll('.fp-item-title').map(function(item){
-            item.onclick = function (event) {
-                var elem =  event.target.nextElementSibling;
-                if (elem.style.display == 'none') elem.style.display = 'block';
-                else
-                    elem.style.display = 'none';
-            };
-        });
-        NsApp.query('#fp-box-open').onclick = function (event) {
-            var elem =  event.target.nextElementSibling;
-            if (elem.style.display == 'none') elem.style.display = 'block';
-            else
-                elem.style.display = 'none';
-        };
-
-
-
-    })();
-</script>

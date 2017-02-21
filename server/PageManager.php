@@ -1,7 +1,7 @@
 <?php
 
 
-class PageDataManager {
+class PageManager {
 
     /** @var SPDO */
     private static $db;

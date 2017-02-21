@@ -326,8 +326,9 @@
     };
 
     /**
-     * Select and return a object with elements selected by 'attr'
-     * or if 'attr' is false return numeric object
+     * Return object with elements, selected by selector,
+     * with  names keys by 'attr' or numeric
+     *
      * .search('li.num', 'data-id')
      * .search('li')
      * .search('li', false, NodeElement)
@@ -363,11 +364,11 @@
      * @param selector      String
      * @param fromCallback  String|HTMLElement|Function
      * @param thisInstance  Object
-     * @returns {Element|null}
+     * @returns {Element|boolean|Node}
      */
     NamespaceApplication.query = function (selector, fromCallback, thisInstance) {
         var elems = NamespaceApplication.queryAll(selector, fromCallback, thisInstance);
-        return elems && elems[0] ? elems[0] : null;
+        return elems && elems[0] ? elems[0] : false;
     };
 
     /**
@@ -379,19 +380,19 @@
      * @returns {*}
      */
     NamespaceApplication.queryAll = function (selector, fromCallback, thisInstance) {
-        var type = typeof fromCallback, // "undefined" "string" "function" "object"
+        var type = typeof fromCallback,
             from = document,
             elements = [],
             callback = null;
 
-        if (selector && selector.nodeType === Node.ELEMENT_NODE)
+        if (NamespaceApplication.isNode(selector))
             return [selector];
 
         if (type == "function")
             callback = fromCallback;
         else if (type == "string")
             from = document.querySelector(fromCallback);
-        else if (type == "object" && fromCallback && (fromCallback.nodeType === Node.ELEMENT_NODE || fromCallback.nodeType === Node.DOCUMENT_NODE))
+        else if (type == "object" && NamespaceApplication.isNode(fromCallback))
             from = fromCallback;
 
         if (from)
@@ -401,38 +402,6 @@
             callback.call(thisInstance || {}, elements);
 
         return elements;
-    };
-
-    /**
-     * Select and return a one element by selector. Search up on a DOM tree
-     *
-     * @deprecated
-     * @param selector
-     * @param from
-     * @param loops
-     * @returns {*}
-     */
-    NamespaceApplication.queryUp = function (selector, from, loops) {
-        var item = null;
-
-        if (loops === undefined)
-            loops = 20;
-
-        if (typeof from === 'string')
-            from = document.querySelector(from);
-
-        if (from.nodeType !== Node.ELEMENT_NODE) {
-            from = document;
-            loops = 0;
-        }
-
-        if (typeof selector === 'string')
-            item = from.querySelector(selector);
-
-        if (!item && loops > 0 && from.parentNode)
-            return NamespaceApplication.queryUp(selector, from.parentNode, --loops);
-
-        return item;
     };
 
     /**
@@ -562,6 +531,30 @@
     };
 
     /**
+     * Display Style for element
+     * @type {{hide: Window.NamespaceApplication.cssDisplay.hide, show: Window.NamespaceApplication.cssDisplay.show, toggle: Window.NamespaceApplication.cssDisplay.toggle, last: Window.NamespaceApplication.cssDisplay.last, isHidden: Window.NamespaceApplication.cssDisplay.isHidden}}
+     */
+    NamespaceApplication.cssDisplay = {
+        hide: function (src) {
+            src._display = src.style.display ? src.style.display : getComputedStyle(src).display;
+            NamespaceApplication.css(src, {display: 'none'})
+        },
+        show: function (src) {
+            NamespaceApplication.css(src, {display: src._display ? src._display : 'block'})
+        },
+        toggle: function (src) {
+            if (src.style.display == 'none') NamespaceApplication.cssDisplay.show(src);
+            else NamespaceApplication.cssDisplay.hide(src)
+        },
+        last: function (src) {
+            return src._display ? src._display : (src.style.display ? src.style.display : getComputedStyle(src).display)
+        },
+        isHidden: function (src) {
+            return src.style.display == 'none' || getComputedStyle(src).display == 'none'
+        }
+    };
+
+    /**
      * Inject data into HTMLElement by selector
      *
      * @param selector
@@ -665,22 +658,28 @@
 
     /**
      * Create DOM Element with attributes
+     * .createElement ( 'div', {class: 'my-class'}, 'inject text')
+     * .createElement ( 'div', {class: 'my-class'}, HTMLElement)
+     * .createElement ( 'span', {class: 'my-class'}, [HTMLElement, HTMLElement])
      * @param tag
      * @param attrs
      * @param inner
      * @returns {*}
      */
     NamespaceApplication.createElement = function (tag, attrs, inner) {
-        var elem = document.createElement(tag);
-        if (typeof elem !== 'object') return null;
-        if (typeof attrs === 'object')
-            for (var key in attrs)
-                elem.setAttribute(key, attrs[key]);
-        if (typeof inner === 'string') {
+        var k, i, elem = document.createElement(tag);
+        if (!elem) return false;
+        if (NamespaceApplication.typeOf(attrs, 'object'))
+            for (k in attrs)
+                elem.setAttribute(k, attrs[k]);
+        if (NamespaceApplication.typeOf(inner, 'string'))
             elem.innerHTML = inner;
-        } else if (typeof inner === 'object') {
+        else if (NamespaceApplication.isNode(inner))
             elem.appendChild(inner);
-        }
+        else if (NamespaceApplication.typeOf(inner, 'array'))
+            for (i = 0; i < inner.length; i++)
+                if (NamespaceApplication.isNode(inner[i]))
+                    elem.appendChild(inner[i]);
         return elem;
     };
 
@@ -731,6 +730,93 @@
         this.clear = function () {
             clearInterval(ht)
         };
+    };
+
+    /**
+     * Get, Set or Remove in cookie
+     *
+     * @param name
+     * @param value
+     * @returns {{set: (NamespaceApplication.Storage.set|*), get: (NamespaceApplication.Storage.get|*), remove: (NamespaceApplication.Storage.remove|*) }}
+     * @constructor
+     */
+    NamespaceApplication.Cookie = function (name, value) {
+        switch (arguments.length) {
+            case 0:
+                return {
+                    set: NamespaceApplication.Cookie.set,
+                    get: NamespaceApplication.Cookie.get,
+                    remove: NamespaceApplication.Cookie.remove
+                };
+                break;
+            case 1:
+                return NamespaceApplication.Cookie.get(name);
+                break;
+            case 2:
+                return NamespaceApplication.Cookie.set(name, value);
+                break;
+        }
+    };
+
+    /**
+     * Get Cookie value by key
+     * @param name
+     * @returns {*}
+     */
+    NamespaceApplication.Cookie.get = function (name) {
+        var decode, matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        decode = matches ? decodeURIComponent(matches[1]) : undefined;
+        if (decode)
+            try {
+                decode = JSON.parse(decode)
+            } catch (error) {
+            }
+        return decode
+    };
+
+    /**
+     * Set Cookie key, value
+     *  expires - ms, Date, -1, 0
+     * @param name
+     * @param value
+     * @param {{}} options   {expires: 0, path: '/', domain: 'site.com', secure: false}
+     */
+    NamespaceApplication.Cookie.set = function (name, value, options) {
+        options = options || {};
+        try {
+            value = JSON.stringify(value);
+        } catch (error) {
+        }
+        var expires = options.expires;
+        var updatedCookie = name + "=" + encodeURIComponent(value);
+        if (typeof expires == "number" && expires) {
+            var d = new Date();
+            d.setTime(d.getTime() + expires * 1000);
+            expires = options.expires = d;
+        }
+        if (expires && expires.toUTCString) {
+            options.expires = expires.toUTCString();
+        }
+        for (var propName in options) {
+            updatedCookie += "; " + propName;
+            var propValue = options[propName];
+            if (propValue !== true)
+                updatedCookie += "=" + propValue;
+        }
+        document.cookie = updatedCookie;
+    };
+
+    /**
+     * Remove Cookie by key
+     * @param name
+     * @param option
+     */
+    NamespaceApplication.Cookie.remove = function (name, option) {
+        option = typeof option === 'object' ? option : {};
+        option.expires = -1;
+        NamespaceApplication.Cookie.set(name, "", option);
     };
 
     /**
@@ -821,6 +907,22 @@
         return window.localStorage.length
     };
 
+    /**
+     * @type {{filterArrayObject: NamespaceApplication.Util.filterArrayObject, filterArrayObjects: NamespaceApplication.Util.filterArrayObjects}}
+     */
+    NamespaceApplication.Util = {};
+    NamespaceApplication.Util.filterArrayObject = function (values, attr, attrValue) {
+        var tmp = NamespaceApplication.Util.filterArrayObjects(values, attr, attrValue);
+        return tmp.length ? tmp[0] : false;
+    };
+    NamespaceApplication.Util.filterArrayObjects = function (values, attr, attrValue) {
+        var i, tmp = [], list = values || [];
+        for (i = 0; i < list.length; i++)
+            if (list[i] && list[i][attr] !== undefined && list[i][attr] == attrValue)
+                tmp.push(list[i]);
+        return tmp
+    };
+
     /** Expansion Base **/
     (function (prototype) {
 
@@ -860,17 +962,19 @@
         prototype.search = NamespaceApplication.search;
         prototype.query = NamespaceApplication.query;
         prototype.queryAll = NamespaceApplication.queryAll;
-        prototype.queryUp = NamespaceApplication.queryUp;
         prototype.each = NamespaceApplication.each;
         prototype.eachParent = NamespaceApplication.eachParent;
         prototype.on = NamespaceApplication.on;
         prototype.css = NamespaceApplication.css;
+        prototype.cssDisplay = NamespaceApplication.cssDisplay;
         prototype.inject = NamespaceApplication.inject;
         prototype.format = NamespaceApplication.format;
         prototype.ajax = NamespaceApplication.ajax;
         prototype.createElement = NamespaceApplication.createElement;
         prototype.Timer = NamespaceApplication.Timer;
+        prototype.Cookie = NamespaceApplication.Cookie;
         prototype.Storage = NamespaceApplication.Storage;
+        prototype.Util = NamespaceApplication.Util;
 
     })(NamespaceApplication.prototype);
 

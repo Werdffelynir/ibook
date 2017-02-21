@@ -1,13 +1,13 @@
 <?php
 include 'libs/SPDO.php';
 include 'libs/SLayout.php';
-include 'libs/PageDataManager.php';
+include 'PageManager.php';
 
 $route = isset($_GET['r']) ? $_GET['r'] : 'list';
 $path_database = __DIR__.'/database/db.sqlite';
 $path_templates = __DIR__.'/views';
 
-$pageDataManager = new PageDataManager($path_database);
+$pageDataManager = new PageManager($path_database);
 
 $layout = new SLayout([
     'path' => $path_templates,
@@ -46,33 +46,38 @@ if ($route == 'edit') {
     ]);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*class Server {
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+class Server {
 
     private $spdo;
     private $slayout;

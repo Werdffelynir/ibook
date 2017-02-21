@@ -1,4 +1,7 @@
-*{font-size: 12px;}
+*{
+    font-family: "sans-serif" , "sans", "Verdana", "Ubuntu Condensed", "Ubuntu", "sans-serif";
+    font-size: 12px;
+}
 #preview{
     background-color: #deb887;
 }
